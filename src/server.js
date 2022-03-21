@@ -1,4 +1,6 @@
 import express from "express";
+import * as http from "http";
+import { WebSocketServer } from 'ws';
 import path from "path";
 
 const app = express();
@@ -17,10 +19,18 @@ app.get('/', (req, res) => {
 // 특정 페이지에 걸리지않은 모든 url index 로 redirect
 app.get('/*', (req, res) => {
   res.redirect('/');
-})
+});
 
 
 const handleListen = () => {
   console.log('🔥 Listening on http://localhost:3000');
 }
-app.listen(3000, handleListen);
+const server = http.createServer(app);
+const ws = new WebSocketServer({ server });
+
+const handleConnection = (socket) => {
+  console.log(socket);
+}
+
+ws.on('connection', handleConnection);
+server.listen(3000, handleListen);
