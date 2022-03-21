@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-// 특정 페이지에 걸리지않은 모든 url index로 redirect
+// 특정 페이지에 걸리지않은 모든 url index 로 redirect
 app.get('/*', (req, res) => {
   res.redirect('/');
 })
