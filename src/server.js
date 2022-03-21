@@ -22,15 +22,25 @@ app.get('/*', (req, res) => {
 });
 
 
-const handleListen = () => {
-  console.log('🔥 Listening on http://localhost:3000');
-}
+
 const server = http.createServer(app);
 const ws = new WebSocketServer({ server });
 
-const handleConnection = (socket) => {
-  console.log(socket);
-}
 
-ws.on('connection', handleConnection);
-server.listen(3000, handleListen);
+ws.on('connection', (socket) => {
+  console.log('Connected to Browser 👋');
+
+  socket.on('close', () => {
+    console.log('Disconnected to Browser 👋');
+  })
+
+  socket.on('message', (msg) => {
+    console.log(msg.toString('utf-8'));
+  })
+
+  socket.send('Hello');
+});
+
+server.listen(3000, () => {
+  console.log('🔥 Listening on http://localhost:3000');
+});
