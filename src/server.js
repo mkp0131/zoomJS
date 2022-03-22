@@ -1,7 +1,8 @@
 import express from 'express';
 import * as http from 'http';
-import { WebSocketServer } from 'ws';
+import { Server } from 'socket.io';
 import path from 'path';
+import res from 'express/lib/response';
 
 const app = express();
 
@@ -21,41 +22,43 @@ app.get('/*', (req, res) => {
   res.redirect('/');
 });
 
-const server = http.createServer(app);
-const ws = new WebSocketServer({ server });
+const httpServer = http.createServer(app);
+const wsServer = new Server(httpServer);
+const nsp = wsServer.of('/nsp'); // 네임스페이스 설정
 
-let sockets = [];
-ws.on('connection', (socket) => {
-  console.log('Connected to Browser 👋');
+const getPublicRoomList = () => {
+  const {
+    adapter: { rooms, sids },
+  } = nsp;
 
-  sockets.push(socket);
-  socket['nickname'] = '🐤 newbie';
-  console.log(sockets.length);
+  const result = [];
+  rooms.forEach((_, k) => {
+    if (!sids.get(k)) result.push(k);
+  });
+  return result;
+};
 
-  socket.on('close', () => {
-    sockets = sockets.filter((aSocket) => aSocket !== socket);
-    console.log('Disconnected to Browser 👋');
+nsp.on('connection', (socket) => {
+  console.log('🔥 Socket server / socket.id: ' + socket.id);
+
+  socket.on('makeNickname', (nickname, done) => {
+    console.log(`😆 ${socket.id}'s nickname: ${nickname}`);
+    socket['nickname'] = nickname;
+    done();
   });
 
-  socket.on('message', (msg) => {
-    const msgJson = JSON.parse(msg);
-    console.log(msgJson);
+  socket.on('makeRoom', (roomName, done) => {
+    socket.join(roomName);
+    const publicRoomList = getPublicRoomList();
 
-    switch (msgJson.type) {
-      case 'msg':
-        sockets.forEach((aSocket) => {
-          aSocket.send(`${socket.nickname}: ${msgJson.payload}`);
-        });
-        break;
-      case 'nickname':
-        const nickname = msgJson.payload;
-        socket['nickname'] = nickname;
-        socket.send(`Nickname is '${nickname}'`);
-        break;
-    }
+    socket.to(roomName).emit('welcome', socket.nickname);
+    nsp.emit('roomList', publicRoomList);
+
+    done();
+    // socket.to(room).emit('hello!');
   });
 });
 
-server.listen(3000, () => {
+httpServer.listen(3000, () => {
   console.log('🔥 Listening on http://localhost:3000');
 });

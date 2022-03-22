@@ -10,11 +10,23 @@ html(lang="en")
     header
       h1 zoomJS
     main
-      ul#msgList
+      h3#myNickname(hidden) My Nickname is 
+        span
+      h3#myRoom(hidden) My Room is 
+        span
+      
+      div#roomList(hidden)
+        h3 Room List
+        ul
+
       form#nickForm
         input(type="text", name="nickname", placeholder="Nickname 👋")
         button(type="submit") Send
-      form#msgForm
-        input(type="text", name="msg", placeholder="New MSG 🧤")
-        button(type="submit") Send
-    script(src="./public/js/app.js")
+      form#roomForm(hidden)
+        input(type="text", name="roomName", placeholder="New Room 🧤")
+        button(type="submit") Enter
+      form#msgForm(hidden)
+        input(type="text", name="msg", placeholder="Write a massege 💌")
+        button(type="submit") Enter
+    script(src="/socket.io/socket.io.js")
+    script(src="/public/js/app.js")
