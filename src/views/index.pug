@@ -10,5 +10,11 @@ html(lang="en")
     header
       h1 zoomJS
     main
-      h2 Hello 🧤
+      ul#msgList
+      form#nickForm
+        input(type="text", name="nickname", placeholder="Nickname 👋")
+        button(type="submit") Send
+      form#msgForm
+        input(type="text", name="msg", placeholder="New MSG 🧤")
+        button(type="submit") Send
     script(src="./public/js/app.js")
