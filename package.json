@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Zoom clone using WebRTC and Websocket",
   "scripts": {
+    "start": "node-babel index.js",
     "dev": "nodemon"
   },
   "repository": {
