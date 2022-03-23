@@ -10,4 +10,8 @@
 - [x] 채팅 구현
 - [x] User 숫자 카운트(룸안에)
 - [x] Admin Panel 연결
-- [ ] Heroku 업로드(라이브)
+- [x] Heroku 업로드(라이브)
+
+## 배포 주소
+
+> https://socketiochat-1.herokuapp.com/

@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import { instrument } from '@socket.io/admin-ui';
 import path from 'path';
 
+const PORT = process.env.PORT || 3000;
 const app = express();
 
 // static 폴더 설정(정적파일 경로 설정)
@@ -86,6 +87,6 @@ nsp.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(process.env.PORT, () => {
-  console.log('🔥 Listening on http://localhost:' + process.env.PORT);
+httpServer.listen(PORT, () => {
+  console.log('🔥 Listening on http://localhost:' + PORT);
 });
