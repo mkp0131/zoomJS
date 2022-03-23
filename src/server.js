@@ -86,6 +86,6 @@ nsp.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(3000, () => {
-  console.log('🔥 Listening on http://localhost:3000');
+httpServer.listen(process.env.PORT, () => {
+  console.log('🔥 Listening on http://localhost:' + process.env.PORT);
 });
