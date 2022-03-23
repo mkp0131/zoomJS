@@ -207,8 +207,10 @@ const joinRoom = (roomName) => {
   });
 };
 
-// const appendMsg = (msg, nickname) => {
-//   const liElement = document.createElement('li');
-//   liElement.innerText = `${nickname}: ${msg}`;
-//   msgListElement.appendChild(liElement);
-// };
+// 모바일메뉴 이벤트
+document.querySelector('.js-m-btn-menu').addEventListener('click', () => {
+  document.querySelector('.js-menu-container').classList.add('on');
+});
+document.querySelector('.js-m-btn-close-menu').addEventListener('click', () => {
+  document.querySelector('.js-menu-container').classList.remove('on');
+});

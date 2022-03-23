@@ -8,9 +8,10 @@ html(lang="en")
     link(rel="stylesheet", href="/public/css/app.css")
   body
     div.app-container
-      .menu-container
+      .menu-container.js-menu-container
         .room-user-list-container
           h3.menu-title 참가자 
+            button.m-btn-close-menu.js-m-btn-close-menu 닫기
             .room-user-cnt
               | (
               span.js-user-cnt
@@ -20,7 +21,8 @@ html(lang="en")
             button 채널보기(준비중)
       .main-container
         .chatting-header
-          h3.channel-name 채널명: 
+          button.m-btn-menu.js-m-btn-menu 메뉴
+          h3.channel-name
             span.js-channel-name HELLO
         ul.chatting-body.js-chatting-body
         .chatting-form
