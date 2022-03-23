@@ -5,31 +5,28 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0")
     meta(http-equiv="X-UA-Compatible", content="ie=edge")
     title zoomJS
-    link(rel="stylesheet", href="//unpkg.com/mvp.css")
+    link(rel="stylesheet", href="/public/css/app.css")
   body
-    header
-      h1 zoomJS
-    main
-      h3#myNickname(hidden) My Nickname is 
-        span
-      h3#myRoom(hidden) My Room is 
-        span#myRoomName
-        span#myRoomCnt
-      
-      div#roomList(hidden)
-        h3 Room List
-        ul
+    div.app-container
+      .menu-container
+        .room-user-list-container
+          h3.menu-title 참가자 
+            .room-user-cnt
+              | (
+              span.js-user-cnt
+              | 명)
+          ul.room-user-list.js-room-user-list
+          .btn-channel-container 
+            button 채널보기(준비중)
+      .main-container
+        .chatting-header
+          h3.channel-name 채널명: 
+            span.js-channel-name HELLO
+        ul.chatting-body.js-chatting-body
+        .chatting-form
+          form.js-chatting-form
+            textarea(name="msg").js-chatting-textarea
+            button(type="submit") SEND
 
-      ul#msgList
-
-      form#nickForm
-        input(type="text", name="nickname", placeholder="Nickname 👋")
-        button(type="submit") Send
-      form#roomForm(hidden)
-        input(type="text", name="roomName", placeholder="New Room 🧤")
-        button(type="submit") Enter
-      form#msgForm(hidden)
-        input(type="text", name="msg", placeholder="Write a massege 💌")
-        button(type="submit") Enter
     script(src="/socket.io/socket.io.js")
     script(src="/public/js/app.js")

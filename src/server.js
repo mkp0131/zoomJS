@@ -5,6 +5,9 @@ import { instrument } from '@socket.io/admin-ui';
 import path from 'path';
 
 const PORT = process.env.PORT || 3000;
+const DEFUALT_ROOM = 'HELLO'; // 기본 채널(방) 이름
+let user_list = []; // [{sid: ..., nickname: ...}]: 유저의 sid와 nickname을 저장
+
 const app = express();
 
 // static 폴더 설정(정적파일 경로 설정)
@@ -50,23 +53,103 @@ const getPublicRoomList = () => {
   return result;
 };
 
-const getRoomUserCnt = (room) => {
-  return nsp.adapter.rooms.get(room).size;
+const getRoomUsers = (room) => {
+  const result = [];
+  nsp.adapter.rooms.get(room).forEach((sid) => {
+    user_list.forEach((user) => {
+      if (user.sid === sid) {
+        result.push(user);
+      }
+    });
+  });
+  return result;
 };
 
-let userTempNum = 1;
+const getRandomNickname = () => {
+  const emoji = [
+    '😀 Smile',
+    '👻 Ghost',
+    '🍎 Apple',
+    '🐤 Chick',
+    '🥕 Carrot',
+    '🚌 Bus',
+    '🦄 Unicorn',
+  ];
+  return emoji[Math.floor(Math.random() * 7)];
+};
+
+const pushUserList = (sid, nickname) => {
+  let changeUserNickname = false;
+  user_list.forEach((user) => {
+    if (user.sid === sid) {
+      user['nickname'] = nickname;
+      changeUserNickname = true;
+    }
+  });
+  if (!changeUserNickname) {
+    user_list.push({ sid, nickname });
+  }
+};
+
 nsp.on('connection', (socket) => {
-  console.log('🔥 Socket server / socket.id: ' + socket.id);
-
   // 처음접속시 설정
-  socket['nickname'] = 'ghost' + userTempNum;
-  userTempNum = userTempNum + 1;
-  // socket.join('hello');
+  socket['nickname'] = getRandomNickname();
+  pushUserList(socket.id, socket.nickname);
+  socket.join(DEFUALT_ROOM); // 기본 방(채널) 입장
+  // 같은 채널에 있는 사람들에게 welcome 보내기
+  socket
+    .to(DEFUALT_ROOM)
+    .emit('welcome', socket.nickname, DEFUALT_ROOM, getRoomUsers(DEFUALT_ROOM)); // 방에 입장했을시 이벤트
+  // 나에게 welcome 보내기
+  socket.emit(
+    'welcome',
+    socket.nickname,
+    DEFUALT_ROOM,
+    getRoomUsers(DEFUALT_ROOM)
+  ); // 방에 입장했을시 이벤트
 
-  socket.on('makeNickname', (nickname, done) => {
+  // 모든 이벤트 Log 남기기
+  socket.onAny((event) => {
+    console.log(`🟦 Socket Event: ${event}`);
+  });
+
+  socket.on('disconnecting', () => {
+    let nickname;
+    const roomName = [...socket.rooms][1];
+    user_list = user_list.filter((user) => {
+      if (user.sid === [...socket.rooms][0]) {
+        nickname = user.nickname;
+        return false;
+      } else {
+        return true;
+      }
+    });
+    socket.to(roomName).emit('bye', nickname, user_list);
+  });
+
+  // 메세지 이벤트
+  socket.on('msg', (msg, roomName, done) => {
+    socket.to(roomName).emit('msg', msg, socket.nickname);
+    done(socket.nickname);
+  });
+
+  socket.on('changeNickname', (nickname, done) => {
+    const originNickname = socket.nickname;
     console.log(`😆 ${socket.id}'s nickname: ${nickname}`);
     socket['nickname'] = nickname;
-    done();
+    const roomName = [...socket.rooms][1];
+    user_list.forEach((user) => {
+      if (user.sid === [...socket.rooms][0]) user.nickname = nickname;
+    });
+    socket
+      .to(roomName)
+      .emit('changeNickname', originNickname, nickname, getRoomUsers(roomName));
+    socket.emit(
+      'changeNickname',
+      originNickname,
+      nickname,
+      getRoomUsers(roomName)
+    );
   });
 
   socket.on('makeRoom', (roomName, done) => {
@@ -77,12 +160,6 @@ nsp.on('connection', (socket) => {
     nsp.emit('roomList', publicRoomList);
     nsp.emit('roomUserCnt', roomUserCnt);
 
-    done();
-    // socket.to(room).emit('hello!');
-  });
-
-  socket.on('msg', (msg, roomName, done) => {
-    socket.to(roomName).emit('msg', msg, socket.nickname);
     done();
   });
 });
