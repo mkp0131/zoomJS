@@ -13,11 +13,14 @@ html(lang="en")
       h3#myNickname(hidden) My Nickname is 
         span
       h3#myRoom(hidden) My Room is 
-        span
+        span#myRoomName
+        span#myRoomCnt
       
       div#roomList(hidden)
         h3 Room List
         ul
+
+      ul#msgList
 
       form#nickForm
         input(type="text", name="nickname", placeholder="Nickname 👋")

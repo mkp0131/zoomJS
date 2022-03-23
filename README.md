@@ -7,6 +7,7 @@
 - [x] 입장, 나가기 메세지 출력
 - [x] Nickname 생성
 - [x] Room 리스트 동기화
-- [ ] 채팅 구현
-- [ ] User 숫자 카운트(룸안에)
-- [ ] Admin Panel 연결
+- [x] 채팅 구현
+- [x] User 숫자 카운트(룸안에)
+- [x] Admin Panel 연결
+- [ ] Heroku 업로드(라이브)

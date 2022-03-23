@@ -1,8 +1,8 @@
 import express from 'express';
 import * as http from 'http';
 import { Server } from 'socket.io';
+import { instrument } from '@socket.io/admin-ui';
 import path from 'path';
-import res from 'express/lib/response';
 
 const app = express();
 
@@ -23,7 +23,18 @@ app.get('/*', (req, res) => {
 });
 
 const httpServer = http.createServer(app);
-const wsServer = new Server(httpServer);
+const wsServer = new Server(httpServer, {
+  cors: {
+    origin: ['https://admin.socket.io'],
+    credentials: true,
+  },
+});
+
+// socket.io - admin 설정
+instrument(wsServer, {
+  auth: false,
+});
+
 const nsp = wsServer.of('/nsp'); // 네임스페이스 설정
 
 const getPublicRoomList = () => {
@@ -38,8 +49,18 @@ const getPublicRoomList = () => {
   return result;
 };
 
+const getRoomUserCnt = (room) => {
+  return nsp.adapter.rooms.get(room).size;
+};
+
+let userTempNum = 1;
 nsp.on('connection', (socket) => {
   console.log('🔥 Socket server / socket.id: ' + socket.id);
+
+  // 처음접속시 설정
+  socket['nickname'] = 'ghost' + userTempNum;
+  userTempNum = userTempNum + 1;
+  // socket.join('hello');
 
   socket.on('makeNickname', (nickname, done) => {
     console.log(`😆 ${socket.id}'s nickname: ${nickname}`);
@@ -49,13 +70,19 @@ nsp.on('connection', (socket) => {
 
   socket.on('makeRoom', (roomName, done) => {
     socket.join(roomName);
-    const publicRoomList = getPublicRoomList();
-
     socket.to(roomName).emit('welcome', socket.nickname);
+    const publicRoomList = getPublicRoomList();
+    const roomUserCnt = getRoomUserCnt(roomName);
     nsp.emit('roomList', publicRoomList);
+    nsp.emit('roomUserCnt', roomUserCnt);
 
     done();
     // socket.to(room).emit('hello!');
+  });
+
+  socket.on('msg', (msg, roomName, done) => {
+    socket.to(roomName).emit('msg', msg, socket.nickname);
+    done();
   });
 });
 
