@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;800&display=swap');
+
+:root {
+  --main-color: #000;
+  --point-color: #ff6d12;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #eee;
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 14px;
+  color: var(--main-color);
+}
+input {
+  font-family: 'Nanum Myeongjo', serif;
+}
+textarea {
+  border: none;
+  padding: 1em;
+  font-size: 1.5rem;
+  font-family: inherit;
+}
+textarea:focus {
+  outline: none;
+}
+button {
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.app-container {
+  display: grid;
+  grid-template-columns: 300px auto;
+  height: 100vh;
+}
+
+.menu-container {
+  background: #ddd;
+  border-right: 1px solid var(--main-color);
+}
+.main-container {
+  display: grid;
+  grid-template-rows: 60px calc(100vh - 210px) 150px;
+}
+
+.menu-container .menu-title {
+  font-weight: 800;
+  font-size: 3rem;
+  padding: 0.5em;
+  margin: 0;
+  border-bottom: 1px solid var(--main-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.room-user-list-container {
+  display: grid;
+  grid-template-rows: 100px auto 100px;
+  height: 100%;
+}
+.room-user-list-container .room-user-list {
+  padding: 1em;
+  overflow: hidden;
+}
+.room-user-list-container .room-user-list li {
+  font-size: 2rem;
+  margin-bottom: 0.4em;
+  display: flex;
+  align-items: center;
+}
+.room-user-list-container .room-user-list li.me {
+  color: var(--point-color);
+  font-weight: 900;
+  width: 100%;
+}
+.room-user-list-container .room-user-list li.me form {
+  display: flex;
+  align-items: center;
+}
+.room-user-list-container .room-user-list li.me input {
+  font-size: inherit;
+  font-weight: inherit;
+  width: 70%;
+  background: transparent;
+  border: none;
+  color: var(--point-color);
+  pointer-events: none;
+}
+
+.room-user-list-container .room-user-list li.me button {
+  margin-left: auto;
+  background: #eee;
+  padding: 0.5em 1em;
+  font-size: 12px;
+  border-radius: 1em;
+}
+
+.room-user-list-container .room-user-list li.me .on input {
+  width: 100%;
+  border-bottom: 1px solid blue;
+  color: blue;
+  pointer-events: visible;
+  outline: none;
+}
+.room-user-list-container .room-user-list li.me .on button {
+  display: none;
+}
+
+.btn-channel-container {
+  border-top: 1px solid #000;
+}
+.btn-channel-container button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+  background: var(--point-color);
+}
+
+.chatting-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #000;
+}
+.chatting-header .channel-name {
+  padding: 0.5em;
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+}
+.chatting-body {
+  padding: 1em;
+  background: #fbfbfb;
+  overflow-y: scroll;
+}
+.chatting-me {
+  margin-bottom: 1em;
+}
+.chatting-other {
+  margin-bottom: 1em;
+}
+.speech-bubble {
+  max-width: 50%;
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.chatting-other .speech-bubble {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+.chatting-nickname {
+  margin-bottom: 0.5em;
+}
+.chatting-other .chatting-nickname {
+  text-align: right;
+}
+.speech-bubble .speech-bubble__txt {
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+  background: var(--point-color);
+  color: #000;
+  display: inline-flex;
+  padding: 1em;
+  border-radius: 0.5em;
+}
+.chatting-other .speech-bubble .speech-bubble__txt {
+  background-color: #eee;
+}
+.chatting-me .speech-bubble:before {
+  content: '';
+  border: 5px solid var(--point-color);
+  border-left: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  margin-top: 5px;
+  z-index: 1;
+}
+.chatting-other .speech-bubble:after {
+  content: '';
+  border: 5px solid #eee;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  margin-top: 5px;
+  z-index: 1;
+}
+.chatting-form {
+  border-top: 1px solid #000;
+}
+.chatting-form form {
+  display: grid;
+  grid-template-columns: auto 100px;
+  height: 100%;
+}
+.chatting-form form button {
+  border-left: 1px solid #000;
+}
+.chatting-msg {
+  text-align: center;
+  width: 100%;
+  font-size: 1.25rem;
+  margin-bottom: 1em;
+}
+
+.room-user-list-container .room-user-cnt {
+  font-size: 50%;
+  margin-left: 0.2em;
+  opacity: 0.6;
+}
+
+/* 반응현 */
